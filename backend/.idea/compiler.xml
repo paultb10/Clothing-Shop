@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+      </profile>
+      <profile name="Annotation profile for review-comment-microservice" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar" />
+        </processorPath>
+        <module name="review-comment-microservice" />
+        <module name="product-microservice" />
+        <module name="order-microservice" />
+        <module name="cart-microservice" />
+        <module name="backend" />
+        <module name="email-promo-microservice" />
+        <module name="wishlist-microservice" />
+        <module name="user-microservice" />
+      </profile>
+      <profile name="Annotation profile for analytics-microservice" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
+        </processorPath>
+        <module name="analytics-microservice" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="analytics-microservice" options="-parameters" />
+      <module name="backend" options="-parameters" />
+      <module name="cart-microservice" options="-parameters" />
+      <module name="email-promo-microservice" options="-parameters" />
+      <module name="order-microservice" options="-parameters" />
+      <module name="product-microservice" options="-parameters" />
+      <module name="review-comment-microservice" options="-parameters" />
+      <module name="user-microservice" options="-parameters" />
+      <module name="wishlist-microservice" options="-parameters" />
+    </option>
+  </component>
+</project>
