@@ -14,5 +14,7 @@ public interface OrderService {
     Order cancelOwnOrder(Long orderId, UUID userId);
     List<Order> getAllOrders(UUID adminId);
     Order placeOrder(UUID userId, String promoCode);
+    Order updateOrderLocation(Long orderId, Double lat, Double lng);
+
 }
 

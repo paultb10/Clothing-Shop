@@ -4,6 +4,7 @@ import clothing_shop.user_microservice.dto.*;
 import clothing_shop.user_microservice.model.User;
 import clothing_shop.user_microservice.security.utils.JwtUtils;
 import clothing_shop.user_microservice.service.AuthService;
+import clothing_shop.user_microservice.service.TokenBlacklistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -56,4 +57,19 @@ public class AuthController {
                 user.getRole()
         );
     }
+
+    @Autowired
+    private TokenBlacklistService tokenBlacklistService;
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestHeader("Authorization") String authHeader) {
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            tokenBlacklistService.blacklistToken(token);
+            return ResponseEntity.ok().body("Logged out successfully");
+        } else {
+            return ResponseEntity.badRequest().body("Missing or invalid Authorization header");
+        }
+    }
+
 }

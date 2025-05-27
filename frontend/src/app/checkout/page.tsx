@@ -12,17 +12,24 @@ export default function OrderCheckoutPage() {
             return;
         }
 
+        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+        if (!token) {
+            alert('Token missing. Please log in again.');
+            return;
+        }
+
         setLoading(true);
 
         try {
             const promoCode = typeof window !== 'undefined' ? localStorage.getItem('promoCode') : null;
 
-            // ✅ Step 1: Place the order with optional promo code
+            // ✅ Step 1: Place the order
             const orderRes = await fetch(`http://localhost:8084/api/orders/${userId}${promoCode ? `?promoCode=${promoCode}` : ''}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-User-Id': userId!,
+                    'Authorization': `Bearer ${token}`
                 },
             });
 
@@ -35,15 +42,15 @@ export default function OrderCheckoutPage() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ amount: order.totalAmount }) // ← add this if the controller expects it
+                body: JSON.stringify({ amount: order.totalAmount })
             });
 
             if (!stripeRes.ok) throw new Error('❌ Failed to create checkout session');
-
             const { url } = await stripeRes.json();
 
-            // ✅ Step 3: Redirect to Stripe (cart/email handled via backend webhook)
+            // ✅ Step 3: Redirect
             if (url) {
                 localStorage.removeItem('promoCode');
                 window.location.href = url;

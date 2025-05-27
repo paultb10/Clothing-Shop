@@ -2,6 +2,7 @@ package clothing.shop.order_microservice.service;
 
 import clothing.shop.order_microservice.client.UserClient;
 import clothing.shop.order_microservice.dto.UserDTO;
+import clothing.shop.order_microservice.security.SecurityUtils;
 import com.stripe.Stripe;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +32,9 @@ public class PaymentService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        UserDTO user = userClient.getUser(order.getUserId()); // ✅ fetch user info
+        UUID userId = order.getUserId();
+
+        UserDTO user = userClient.getUser(userId, "Bearer " + SecurityUtils.getCurrentToken());
 
         // Optional: Sanity check to ensure order total matches expected totalAmount
 

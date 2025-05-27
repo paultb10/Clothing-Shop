@@ -13,6 +13,7 @@ import clothing.shop.order_microservice.model.Order;
 import clothing.shop.order_microservice.model.OrderItem;
 import clothing.shop.order_microservice.model.OrderStatus;
 import clothing.shop.order_microservice.repository.OrderRepository;
+import clothing.shop.order_microservice.security.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -33,10 +34,15 @@ public class OrderServiceImpl implements OrderService {
     private final ProductClient productClient;
     private final PromoEmailClient promoEmailClient;
 
+    // Inject geocodingService
+    private final GeocodingService geocodingService;
+
     @Override
     public Order placeOrder(UUID userId, String promoCode) {
-        UserDTO user = userClient.getUser(userId);
+        UserDTO user = userClient.getUser(userId, "Bearer " + SecurityUtils.getCurrentToken());
         CartDTO cart = cartClient.getCart(userId.toString());
+        double[] coords = geocodingService.geocodeAddress(user.getAddress());
+
 
         if (cart.getItems().isEmpty()) {
             throw new IllegalStateException("Cart is empty.");
@@ -97,6 +103,8 @@ public class OrderServiceImpl implements OrderService {
         Order order = Order.builder()
                 .userId(userId)
                 .shippingAddress(user.getAddress())
+                .destinationLat(coords[0])
+                .destinationLng(coords[1])
                 .status(OrderStatus.PENDING)
                 .createdAt(LocalDateTime.now())
                 .totalAmount(total)
@@ -126,7 +134,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        UserDTO requester = userClient.getUser(requesterId);
+        UserDTO requester = userClient.getUser(requesterId, "Bearer " + SecurityUtils.getCurrentToken());
 
         boolean isAdmin = requester.getRole().equalsIgnoreCase("ADMIN");
         boolean isUser = requester.getRole().equalsIgnoreCase("USER");
@@ -172,12 +180,24 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> getAllOrders(UUID adminId) {
-        UserDTO requester = userClient.getUser(adminId);
+        UserDTO requester = userClient.getUser(adminId, "Bearer " + SecurityUtils.getCurrentToken());
         if (!requester.getRole().equalsIgnoreCase("ADMIN")) {
             throw new RuntimeException("Unauthorized");
         }
         return orderRepository.findAll();
     }
+
+    @Override
+    public Order updateOrderLocation(Long orderId, Double lat, Double lng) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        order.setCurrentLat(lat);
+        order.setCurrentLng(lng);
+
+        return orderRepository.save(order);
+    }
+
 
 }
 

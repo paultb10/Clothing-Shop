@@ -40,4 +40,13 @@ public class Order {
     @Column(name = "stripe_session_id")
     private String stripeSessionId;
 
+    private Double currentLat;
+
+    private Double currentLng;
+
+    private Double destinationLat;
+
+    private Double destinationLng;
+
+
 }

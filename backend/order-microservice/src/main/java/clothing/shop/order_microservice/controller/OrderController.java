@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -56,6 +57,18 @@ public class OrderController {
     @GetMapping("/admin/orders")
     public ResponseEntity<List<Order>> getAllOrdersForAdmin(@RequestHeader("X-User-Id") UUID adminId) {
         return ResponseEntity.ok(orderService.getAllOrders(adminId));
+    }
+
+    @PatchMapping("/{orderId}/location")
+    public ResponseEntity<Order> updateOrderLocation(
+            @PathVariable Long orderId,
+            @RequestBody Map<String, Double> location
+    ) {
+        Double lat = location.get("latitude");
+        Double lng = location.get("longitude");
+
+        Order updatedOrder = orderService.updateOrderLocation(orderId, lat, lng);
+        return ResponseEntity.ok(updatedOrder);
     }
 
 }
