@@ -34,7 +34,6 @@ public class OrderServiceImpl implements OrderService {
     private final ProductClient productClient;
     private final PromoEmailClient promoEmailClient;
 
-    // Inject geocodingService
     private final GeocodingService geocodingService;
 
     @Override
@@ -71,10 +70,8 @@ public class OrderServiceImpl implements OrderService {
             orderItems.add(orderItem);
         }
 
-        // Apply discount if promo code is valid
         if (promoCode != null && !promoCode.isBlank()) {
             try {
-                // Call the promo service to validate and get discount
                 var response = promoEmailClient.validatePromoByEmail(Map.of(
                         "email", user.getEmail(),
                         "code", promoCode
@@ -94,7 +91,6 @@ public class OrderServiceImpl implements OrderService {
 
             } catch (Exception ex) {
                 System.err.println("Promo code validation failed: " + ex.getMessage());
-                // Optionally allow order to proceed without discount
             }
         }
 
@@ -140,7 +136,6 @@ public class OrderServiceImpl implements OrderService {
         boolean isUser = requester.getRole().equalsIgnoreCase("USER");
 
         if (isAdmin) {
-            // Admin can set any status
             order.setStatus(newStatus);
         } else if (isUser) {
             if (!order.getUserId().equals(requesterId)) {

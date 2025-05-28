@@ -19,7 +19,6 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDTO create(CommentDTO dto) {
-        // Optional: validate the review exists
         if (!reviewRepo.existsById(dto.reviewId())) {
             throw new RuntimeException("Review not found");
         }

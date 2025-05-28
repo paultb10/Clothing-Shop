@@ -21,7 +21,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public ReviewDTO create(ReviewDTO dto) {
         try {
-            productClient.getProductById(dto.productId()); // Validate existence
+            productClient.getProductById(dto.productId());
         } catch (FeignException.NotFound e) {
             throw new RuntimeException("Product not found");
         }

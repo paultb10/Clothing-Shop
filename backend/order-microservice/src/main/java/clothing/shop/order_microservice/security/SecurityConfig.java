@@ -35,7 +35,6 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // Use allowedOriginPatterns instead of allowedOrigins
         config.setAllowedOriginPatterns(List.of(
                 "http://localhost:3000",
                 "https://localhost:3000"

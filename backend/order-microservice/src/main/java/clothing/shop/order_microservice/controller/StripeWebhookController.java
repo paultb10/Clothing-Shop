@@ -65,12 +65,10 @@ public class StripeWebhookController {
                     orderRepository.save(order);
                     System.out.println("✅ Order confirmed: " + order.getId());
 
-                    // ✅ Extract item summaries into final variable first
                     final List<String> itemSummaries = order.getItems().stream()
                             .map(i -> String.format("%dx Product #%d (%s)", i.getQuantity(), i.getProductId(), i.getSize()))
                             .toList();
 
-                    // ✅ Send Email
                     OrderEmailDTO dto = new OrderEmailDTO(
                             order.getUserId(),
                             order.getShippingAddress(),
@@ -86,7 +84,6 @@ public class StripeWebhookController {
                         e.printStackTrace();
                     }
 
-                    // ✅ Clear Cart
                     try {
                         cartClient.clearCart(order.getUserId().toString());
                         System.out.println("🧹 Cart cleared for user: " + order.getUserId());

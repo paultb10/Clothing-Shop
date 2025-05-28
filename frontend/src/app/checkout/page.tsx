@@ -23,7 +23,6 @@ export default function OrderCheckoutPage() {
         try {
             const promoCode = typeof window !== 'undefined' ? localStorage.getItem('promoCode') : null;
 
-            // ✅ Step 1: Place the order
             const orderRes = await fetch(`http://localhost:8084/api/orders/${userId}${promoCode ? `?promoCode=${promoCode}` : ''}`, {
                 method: 'POST',
                 headers: {
@@ -37,7 +36,6 @@ export default function OrderCheckoutPage() {
             const order = await orderRes.json();
             console.log('✅ Order placed:', order);
 
-            // ✅ Step 2: Create Stripe checkout session
             const stripeRes = await fetch(`http://localhost:8084/api/payments/create-checkout-session/${order.id}`, {
                 method: 'POST',
                 headers: {
@@ -50,7 +48,6 @@ export default function OrderCheckoutPage() {
             if (!stripeRes.ok) throw new Error('❌ Failed to create checkout session');
             const { url } = await stripeRes.json();
 
-            // ✅ Step 3: Redirect
             if (url) {
                 localStorage.removeItem('promoCode');
                 window.location.href = url;

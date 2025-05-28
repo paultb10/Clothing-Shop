@@ -16,7 +16,7 @@ import java.util.UUID;
 public class JwtUtils {
 
     private Key jwtKey;
-    private final long jwtExpirationMs = 86400000; // 1 day
+    private final long jwtExpirationMs = 86400000;
 
     @PostConstruct
     public void init() {

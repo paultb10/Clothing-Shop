@@ -1,7 +1,6 @@
 package clothing.shop.order_microservice.controller;
 
 import clothing.shop.order_microservice.dto.StatusUpdateRequest;
-import clothing.shop.order_microservice.dto.UserDTO;
 import clothing.shop.order_microservice.model.Order;
 import clothing.shop.order_microservice.service.OrderService;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,3 @@
-// 📩 Newsletter Subscription UI & API call
 import { useState } from 'react';
 
 export default function NewsletterSignup() {

@@ -26,13 +26,12 @@ public class LocationWebSocketController {
         System.out.println("📡 Sending WebSocket update for order: " + orderId + " | lat: " + update.getLatitude() + ", lng: " + update.getLongitude());
         messagingTemplate.convertAndSend("/topic/order/" + orderId, update);
 
-        // Optional: check and auto-complete order
         orderRepository.findById(orderId).ifPresent(order -> {
             double destLat = order.getDestinationLat();
             double destLng = order.getDestinationLng();
             double distance = calculateDistance(update.getLatitude(), update.getLongitude(), destLat, destLng);
 
-            if (order.getStatus() == OrderStatus.SHIPPED && distance < 0.1) { // within 100 meters
+            if (order.getStatus() == OrderStatus.SHIPPED && distance < 0.1) {
                 order.setStatus(OrderStatus.DELIVERED);
                 orderRepository.save(order);
                 messagingTemplate.convertAndSend("/topic/order-status/" + orderId, "DELIVERED");
@@ -45,13 +44,13 @@ public class LocationWebSocketController {
     }
 
     private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
-        final int R = 6371; // Radius of the Earth in km
+        final int R = 6371;
         double latDistance = Math.toRadians(lat2 - lat1);
         double lonDistance = Math.toRadians(lon2 - lon1);
         double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
                 + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
                 * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R * c; // distance in kilometers
+        return R * c;
     }
 }

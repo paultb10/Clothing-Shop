@@ -42,11 +42,9 @@ export default function OrdersPage() {
                 const data: Order[] = await res.json();
                 setOrders(data);
 
-                // Collect all unique productIds
                 const productIds = new Set<number>();
                 data.forEach(order => order.items.forEach(item => productIds.add(item.productId)));
 
-                // Fetch product details for all items
                 const fetchedProducts: Record<number, Product> = {};
                 await Promise.all(
                     Array.from(productIds).map(async (id) => {

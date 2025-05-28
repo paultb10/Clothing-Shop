@@ -7,7 +7,7 @@ export default function DriverSimulator() {
     const [path, setPath] = useState<google.maps.LatLngLiteral[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
-    const [googleReady, setGoogleReady] = useState(false); // ⬅️ Proper client flag
+    const [googleReady, setGoogleReady] = useState(false);
 
     const origin = { lat: 46.770439, lng: 23.591423 };
     const destination = { lat: 46.7743731, lng: 23.6120002 };
@@ -95,7 +95,6 @@ export default function DriverSimulator() {
                 className="border p-2 w-full mb-4"
             />
 
-            {/* Always render structure. Disable functionality if google isn't ready */}
             <div className="flex flex-col gap-2">
                 <button
                     onClick={googleReady ? fetchRoute : undefined}

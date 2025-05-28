@@ -4,13 +4,10 @@ import {
     GoogleMap,
     LoadScript,
     Marker,
-    InfoWindow,
     Polyline,
 } from '@react-google-maps/api';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'next/navigation';
-import SockJS from 'sockjs-client';
-import { Client } from '@stomp/stompjs';
 
 const containerStyle = {
     width: '100%',
@@ -29,7 +26,6 @@ export default function OrderTrackingPage() {
     const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
     const [routePath, setRoutePath] = useState<google.maps.LatLngLiteral[]>([]);
     const [liveLocation, setLiveLocation] = useState<{ lat: number; lng: number } | null>(null);
-    const [currentIndex, setCurrentIndex] = useState(0);
     const [trackingStarted, setTrackingStarted] = useState(false);
     const mapRef = useRef<google.maps.Map | null>(null);
 
@@ -43,7 +39,6 @@ export default function OrderTrackingPage() {
         lng: order?.currentLng ?? centralDeposit.lng,
     }), [order]);
 
-    // Load order data
     useEffect(() => {
         const fetchOrder = async () => {
             try {
@@ -60,7 +55,6 @@ export default function OrderTrackingPage() {
         fetchOrder();
     }, [orderId]);
 
-    // Poll for updates every 10s
     useEffect(() => {
         if (!order || order.status !== 'SHIPPED') return;
 
@@ -77,7 +71,6 @@ export default function OrderTrackingPage() {
         return () => clearInterval(interval);
     }, [orderId, order]);
 
-    // Setup WebSocket location updates
     useEffect(() => {
         if (!order || order.status !== 'SHIPPED') return;
 
@@ -92,14 +85,13 @@ export default function OrderTrackingPage() {
                 }
             };
 
-            fetchUpdate(); // fire the async logic inside the sync wrapper
+            fetchUpdate();
         }, 10000);
 
         return () => clearInterval(interval);
     }, [orderId, order]);
 
 
-    // Fetch route
     useEffect(() => {
         if (!mapsApi || !order) return;
 
@@ -123,7 +115,6 @@ export default function OrderTrackingPage() {
         );
     }, [mapsApi, order]);
 
-// Refs to persist values across renders
     const currentRef = useRef(0);
     const progressRef = useRef(0);
 
@@ -139,12 +130,11 @@ export default function OrderTrackingPage() {
                 console.log('✅ Reached destination');
                 clearInterval(interval);
 
-                // 🔁 Update order status to DELIVERED via PATCH with header
                 fetch(`http://localhost:8084/api/orders/${orderId}/status`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-User-Id': '3273c1b2-b42e-4449-a6f1-a81b53facf08', // Replace with actual requester UUID
+                        'X-User-Id': '3273c1b2-b42e-4449-a6f1-a81b53facf08',
                     },
                     body: JSON.stringify({ status: 'DELIVERED' }),
                 })

@@ -62,7 +62,6 @@ public class PromoService {
         if (promo.getExpiresAt().isBefore(LocalDateTime.now())) return false;
         if (promo.isOneTimeUse() && promo.getUsedByUsers().contains(userId)) return false;
 
-        // Mark as used if valid
         if (promo.isOneTimeUse()) {
             promo.getUsedByUsers().add(userId);
             promoRepo.save(promo);

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Map;
 
-@FeignClient(name = "promo-service", url = "http://localhost:8085") // or Eureka service ID
+@FeignClient(name = "promo-service", url = "http://localhost:8085")
 public interface PromoEmailClient {
     @PostMapping("/api/emails/order-confirm")
     void sendOrderConfirmation(@RequestBody OrderEmailDTO order);

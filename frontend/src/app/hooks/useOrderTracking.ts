@@ -15,7 +15,6 @@ export function useOrderTracking(orderId: number) {
                     console.log('✅ WebSocket update:', body);
                     console.log('📡 Received location message:', message.body);
 
-                    // ✅ Transform incoming structure
                     setLocation({
                         lat: body.latitude,
                         lng: body.longitude,

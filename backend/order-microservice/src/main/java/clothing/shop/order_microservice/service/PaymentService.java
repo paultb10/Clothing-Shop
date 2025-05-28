@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -36,8 +35,6 @@ public class PaymentService {
 
         UserDTO user = userClient.getUser(userId, "Bearer " + SecurityUtils.getCurrentToken());
 
-        // Optional: Sanity check to ensure order total matches expected totalAmount
-
         SessionCreateParams.LineItem lineItem = SessionCreateParams.LineItem.builder()
                 .setQuantity(1L)
                 .setPriceData(
@@ -59,15 +56,15 @@ public class PaymentService {
                 .setMode(SessionCreateParams.Mode.PAYMENT)
                 .setSuccessUrl("http://localhost:3000/orders")
                 .setCancelUrl("http://localhost:3000/cart")
-                .putMetadata("order_id", order.getId().toString())  // ✅ helpful to fallback if needed
+                .putMetadata("order_id", order.getId().toString())
                 .build();
 
 
         try {
             Session session = Session.create(params);
             order.setStripeSessionId(session.getId());
-            orderRepository.save(order); // update with session ID
-            return session.getUrl(); // return the redirect URL
+            orderRepository.save(order);
+            return session.getUrl();
         } catch (Exception e) {
             throw new RuntimeException("Stripe session creation failed", e);
         }

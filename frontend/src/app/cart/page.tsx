@@ -87,7 +87,7 @@ export default function CartPage() {
                     setDiscount(data.discount);
                 }
 
-                localStorage.setItem('promoCode', promoCode); // ✅ only here
+                localStorage.setItem('promoCode', promoCode);
             } else {
                 setPromoResult(`❌ ${data.message}`);
                 setDiscount(0);

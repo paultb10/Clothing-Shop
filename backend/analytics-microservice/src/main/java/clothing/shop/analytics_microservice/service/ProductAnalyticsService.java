@@ -19,7 +19,7 @@ public class ProductAnalyticsService {
     public ProductAnalyticsDTO fetchProductAnalytics() {
         long totalProducts = countFromEndpoint("/products");
         long totalCategories = countFromEndpoint("/categories");
-        long totalBrands = countFromEndpoint("/api/brands"); // note the `/api` prefix for brands
+        long totalBrands = countFromEndpoint("/api/brands");
         long totalTags = countFromEndpoint("/tags");
 
         return new ProductAnalyticsDTO(totalProducts, totalCategories, totalBrands, totalTags);
